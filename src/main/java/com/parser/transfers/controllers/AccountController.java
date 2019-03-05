@@ -5,9 +5,7 @@ import com.parser.transfers.exception.AccountNotFoundException;
 import com.parser.transfers.repositories.AccountRepository;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,5 +42,23 @@ public class AccountController {
         return new Resource<>(account,
                 linkTo(methodOn(AccountController.class).one(id)).withSelfRel(),
                 linkTo(methodOn(AccountController.class).all()).withRel("account"));
+    }
+
+    @PutMapping("/account/{id}")
+    Resource<Account> add(@RequestBody Account newAccount, @PathVariable Long id){
+        return repository.findById(id)
+                .map(account -> {
+                    account.setCurrency(newAccount.getCurrency());
+                    account.setBalance(newAccount.getBalance());
+                    return new Resource<>(repository.save(account),
+                            linkTo(methodOn(AccountController.class).one(id)).withSelfRel(),
+                            linkTo(methodOn(AccountController.class).all()).withRel("account"));
+                })
+                .orElseGet(() -> {
+                    newAccount.setAccountId(id);
+                    return new Resource<>(repository.save(newAccount),
+                            linkTo(methodOn(AccountController.class).one(id)).withSelfRel(),
+                            linkTo(methodOn(AccountController.class).all()).withRel("account"));
+                });
     }
 }

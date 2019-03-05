@@ -1,12 +1,11 @@
 package com.parser.transfers;
 
-import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +24,7 @@ public class CsvUtils {
         try {
             CsvSchema schema = CsvSchema.emptySchema().withHeader();
             CsvMapper mapper = new CsvMapper();
+            mapper.registerModule(new JavaTimeModule());
             String filePath = inputPath + fileName;
             File file = new ClassPathResource(filePath).getFile();
             mapper.schemaFor(clazz).withHeader().withColumnReordering(true);

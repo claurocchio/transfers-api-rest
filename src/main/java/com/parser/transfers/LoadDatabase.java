@@ -1,6 +1,7 @@
 package com.parser.transfers;
 
 import com.parser.transfers.domain.Account;
+import com.parser.transfers.domain.Transfer;
 import com.parser.transfers.repositories.AccountRepository;
 import com.parser.transfers.repositories.TransferRepository;
 import lombok.extern.slf4j.Slf4j;
